@@ -4,8 +4,8 @@ import java.util.ArrayList;
  * This class uses the factory design pattern to provide a list of
  *      objects that implement the Brain interface
  *
- * @author gcschmit
- * @version 24 January 2020
+ * @author rpande
+ * @version 30 May 2021
  */
 public class BrainFactory
 {
@@ -25,6 +25,11 @@ public class BrainFactory
          *      the list.
          */
         
-        return null;
+        ArrayList<Brain> list = new ArrayList<Brain>();
+        
+        list.add(new SimpleBrain());
+        list.add(new SmallBrain());
+        
+        return list;
     }
 }
