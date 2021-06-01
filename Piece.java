@@ -44,7 +44,55 @@ public final class Piece {
     private Piece(Point[] points)
     {
         // TODO: implement constructor
-    }   
+        body = points;
+
+        // width and height
+        width = 0;
+        height = 0;
+
+        for (Point pt: points)
+        {
+            if (pt.getX() > width)
+            {
+                width = (int) pt.getX();
+            }
+            if (pt.getY() > height)
+            {
+                height = (int) pt.getY();
+            }
+        }
+
+        width++;
+        height++;
+
+        // skirt
+        Integer integerArray[] = new Integer[0];
+        ArrayList<Integer> skirtCoordinates = new ArrayList<Integer>(Arrays.asList(integerArray));
+        for (int i = 0; i < width; i++)
+        {
+            int minY = points.length; // highest value possible
+
+            boolean found = false;
+
+            for (Point pt : points)
+            {
+                if (i == (int) pt.getX())
+                {
+                    if ((int) pt.getX() < minY)
+                    {
+                        found = true;
+                        minY = (int) pt.getY();
+                    }
+                }
+            }
+            if (found)
+            {
+                skirtCoordinates.add(minY);
+            }
+
+            skirt = skirtCoordinates.stream().mapToInt(Integer :: intValue).toArray();
+        }   
+    }
 
     /**
      * Returns the width of the piece measured in blocks.
@@ -157,12 +205,26 @@ public final class Piece {
     public String toString()
     {
         String str = "";
-        
+
         // TODO: build a string that contains all of the attributes of this Piece
-        
+
+        str = "Body: ";
+        for (Point p : body)
+        {
+            str = str + "(" + (int) p.getX() + ", " + (int) p.getY() + ") ";
+        }
+
+        str = str + "Height: " + height + " Width: " + width + " Skirt: {";
+        for (int i : skirt)
+        {
+            str = str + " " + i;
+        }
+
+        str = str + "}";
+
         return str;
     }
-    
+
     /**
      * Returns an array containing the first rotation of each of the 7 standard
      *      tetris pieces. The next (counterclockwise) rotation can be obtained
@@ -204,7 +266,7 @@ public final class Piece {
     private static Piece pieceRow(Piece firstPiece)
     {
         Piece piece = firstPiece;
-        
+
         System.out.println("\nfirst piece: " + piece);
 
         // maximum of 4 rotations until we are back at the first piece (we may break earlier)
@@ -215,17 +277,21 @@ public final class Piece {
             for(int i = 0; i < rotatedPoints.length; i++)
             {
                 rotatedPoints[i] = new Point(piece.getBody()[i]);
+
+                // TODO: step 1: reflect across the line y = x
+                rotatedPoints[i] = new Point((int) rotatedPoints[i].getY(), (int) rotatedPoints[i].getX());
+
+                // TODO: step 2: reflect across y axis
+                rotatedPoints[i] = new Point(-1 * (int) rotatedPoints[i].getX(), (int) rotatedPoints[i].getY());
+
+                // TODO: step 3: translate right
+                rotatedPoints[i] = new Point((int) rotatedPoints[i].getX() + (piece.height - 1), (int) rotatedPoints[i].getY());
             }
 
-            // TODO: step 1: reflect across the line y = x
-            
-            // TODO: step 2: reflect across y axis
-            
-            // TODO: step 3: translate right
-            
+
             // create the rotated piece, update next, prepare for nextIteration
             Piece rotatedPiece = new Piece(rotatedPoints);
-            
+
             System.out.println(rotatedPiece);
 
             // check if we are back to the original piece
