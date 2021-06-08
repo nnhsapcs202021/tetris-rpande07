@@ -78,7 +78,7 @@ public final class Piece {
             {
                 if (i == (int) pt.getX())
                 {
-                    if ((int) pt.getX() < minY)
+                    if ((int) pt.getY() < minY)
                     {
                         found = true;
                         minY = (int) pt.getY();
